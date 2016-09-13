@@ -59,6 +59,9 @@ public class GoogleDriveUploader {
     /** Global Drive API client. */
     private static Drive drive;
 
+    /** アップロード先のディレクトリ指定時のデリミタ */
+    private static final String FILE_DELIMITER = "/";
+
     /** Authorizes the installed application to access user's protected data. */
     private static Credential authorize() throws Exception {
         // load client secrets
@@ -76,6 +79,15 @@ public class GoogleDriveUploader {
     }
 
     public void upload( String srcFilePath, String destDirPath) {
+        upload( srcFilePath, destDirPath, srcFilePath);
+    }
+
+    /**
+     * @param srcFilePath アップロードするファイルパス
+     * @param destDir アップロード先のパス。hoge/piyo/fugaのように指定
+     * @param destFileName アップロード先のファイル名
+     */
+    public void upload( String srcFilePath, String destDir, String destFileName) {
 
         try {
 
@@ -87,9 +99,9 @@ public class GoogleDriveUploader {
             drive = new Drive.Builder( httpTransport, JSON_FACTORY, credential).setApplicationName( APPLICATION_NAME).build();
 
             // run commands
-            View.header1( "startUpload: src=" + srcFilePath + " dest=" + destDirPath);
+            View.header1( "startUpload: src=" + srcFilePath + " destDir=" + destDir + "destFileName=" + destFileName);
             @SuppressWarnings( "unused")
-            File uploadedFile = uploadFile( srcFilePath, destDirPath);
+            File uploadedFile = uploadFile( srcFilePath, destDir, destFileName);
 
             View.header1( "Success!");
             return;
@@ -104,22 +116,23 @@ public class GoogleDriveUploader {
     }
 
     public static void main( String[] args) {
-        Preconditions.checkArgument( args.length == 2, "引数1にアップロードするファイルパスを、引数2にアップロード先ディレクトリを指定してください。");
+        Preconditions.checkArgument( args.length == 3,
+            "引数1にアップロード元ファイルパスを、引数2にアップロード先ディレクトリを、引数3にアップロード先ファイル名を指定してください。例:java -jar GoogleDriveUploader.jar hoge.txt backup/piyo hoge_bk.txt");
         String srcFilePath = args[0];
         String destDir = args[1];
+        String uploadFileName = args[2];
         GoogleDriveUploader uploader = new GoogleDriveUploader();
-        uploader.upload( srcFilePath, destDir);
+        uploader.upload( srcFilePath, destDir, uploadFileName);
         System.exit( 1);
-
     }
 
     /** Uploads a file using either resumable or direct media upload. */
-    private File uploadFile( String srcFilePath, String destDirPath) throws IOException {
+    private File uploadFile( String srcFilePath, String destDirPath, String uploadFileName) throws IOException {
         File destDir = getDir( destDirPath, true);
 
         File fileMetadata = new File();
         final java.io.File uploadFile = new java.io.File( srcFilePath);
-        fileMetadata.setTitle( uploadFile.getName());
+        fileMetadata.setTitle( uploadFileName);
         if ( destDir != null) {
             fileMetadata.setParents( createParentRef( destDir));
         }
@@ -143,7 +156,7 @@ public class GoogleDriveUploader {
      */
     private File getDir( String dirPath, boolean createIfNotExists) throws IOException {
         List<File> children = retrieveAllFiles( drive.files().list().setQ( "trashed = false"));
-        String[] dirNames = dirPath.split( "/");
+        String[] dirNames = dirPath.split( FILE_DELIMITER);
         File parent = null;
         for ( int currentDirIdx = 0; currentDirIdx < dirNames.length; currentDirIdx++) {
             String dirName = dirNames[currentDirIdx];
@@ -156,6 +169,7 @@ public class GoogleDriveUploader {
                 children = retrieveAllFiles( drive.files().list().setQ( "'" + parent.getId() + "' in parents"));
             }
             for ( File file : children) {
+                // NOTE ディレクトリ名重複は考えず最初にヒットしたものと使う
                 if ( file.getTitle().equals( dirName)) {
                     nextDir = file;
                     break;
@@ -200,6 +214,7 @@ public class GoogleDriveUploader {
             catch ( IOException e) {
                 System.out.println( "An error occurred: " + e);
                 request.setPageToken( null);
+                throw e;
             }
         }
         while ( request.getPageToken() != null && request.getPageToken().length() > 0);
