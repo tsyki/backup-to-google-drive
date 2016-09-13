@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.google.api.services.samples.drive.cmdline;
+package tsyki.googleapi.drive;
 
 /**
  * Utility methods to print to the command line.
