@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.google.api.services.samples.drive.cmdline;
+package tsyki.googleapi.drive;
 
 import java.io.IOException;
 import java.text.NumberFormat;
