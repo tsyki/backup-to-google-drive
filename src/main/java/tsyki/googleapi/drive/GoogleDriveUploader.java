@@ -155,7 +155,6 @@ public class GoogleDriveUploader {
      * @throws IOException
      */
     private File getDir( String dirPath, boolean createIfNotExists) throws IOException {
-        List<File> children = retrieveAllFiles( drive.files().list().setQ( "trashed = false"));
         String[] dirNames = dirPath.split( FILE_DELIMITER);
         File parent = null;
         for ( int currentDirIdx = 0; currentDirIdx < dirNames.length; currentDirIdx++) {
@@ -165,8 +164,14 @@ public class GoogleDriveUploader {
                 continue;
             }
             File nextDir = null;
+            List<File> children;
             if ( parent != null) {
-                children = retrieveAllFiles( drive.files().list().setQ( "'" + parent.getId() + "' in parents"));
+                // 有効かつparent直下のファイルを全て取得
+                children = retrieveAllFiles( drive.files().list().setQ( "trashed = false and '" + parent.getId() + "' in parents"));
+            }
+            else {
+                // 初回はルートディレクトリ直下の有効なファイルを全て取得
+                children = retrieveAllFiles( drive.files().list().setQ( "trashed = false"));
             }
             for ( File file : children) {
                 // NOTE ディレクトリ名重複は考えず最初にヒットしたものと使う
