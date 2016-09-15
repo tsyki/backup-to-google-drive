@@ -99,7 +99,7 @@ public class GoogleDriveUploader {
             drive = new Drive.Builder( httpTransport, JSON_FACTORY, credential).setApplicationName( APPLICATION_NAME).build();
 
             // run commands
-            View.header1( "startUpload: src=" + srcFilePath + " destDir=" + destDir + "destFileName=" + destFileName);
+            View.header1( "startUpload: src=" + srcFilePath + " destDir=" + destDir + " destFileName=" + destFileName);
             @SuppressWarnings( "unused")
             File uploadedFile = uploadFile( srcFilePath, destDir, destFileName);
 
