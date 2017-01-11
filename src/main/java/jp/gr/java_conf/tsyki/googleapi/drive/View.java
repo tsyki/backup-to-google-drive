@@ -12,7 +12,7 @@
  * the License.
  */
 
-package tsyki.googleapi.drive;
+package jp.gr.java_conf.tsyki.googleapi.drive;
 
 /**
  * Utility methods to print to the command line.

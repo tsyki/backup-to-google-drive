@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>tsyki</groupId>
+  <groupId>jp.gr.java_conf.tsyki</groupId>
   <artifactId>backup_to_google_drive</artifactId>
   <version>1.0.0</version>
   <dependencies>
@@ -64,7 +64,7 @@
 				</descriptorRefs>
 				<archive>
 					<manifest>
-						<mainClass>tsyki.googleapi.drive.GoogleDriveUploader</mainClass>
+						<mainClass>jp.gr.java_conf.tsyki.googleapi.drive.GoogleDriveUploader</mainClass>
 					</manifest>
 				</archive>
 			</configuration>
@@ -79,15 +79,15 @@
 			</executions>
 		</plugin>
 	</plugins>
-	<!-- XXX Eclipseからjarを作るとjarと同じディレクトリのclient_secretsを読み込むが、mavenでビルドするとjarの中のclient_secretsを見に行ってしまうので、残す --> 
-	<!-- 
+	<!-- XXX Eclipseからjarを作るとjarと同じディレクトリのclient_secretsを読み込むが、mavenでビルドするとjarの中のclient_secretsを見に行ってしまうので、残す -->
+	<!--
 	<resources>
       <resource>
         <directory>src</directory>
         <includes>
           <include>*</include>
         </includes>
-        <excludes>    
+        <excludes>
           <exclude>**/client_secrets.json</exclude>
         </excludes>
       </resource>

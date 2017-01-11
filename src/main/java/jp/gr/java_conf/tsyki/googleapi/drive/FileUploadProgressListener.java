@@ -12,7 +12,7 @@
  * the License.
  */
 
-package tsyki.googleapi.drive;
+package jp.gr.java_conf.tsyki.googleapi.drive;
 
 import java.io.IOException;
 import java.text.NumberFormat;
