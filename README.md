@@ -39,3 +39,6 @@ StoredCredentialはホームディレクトリの.store/google_drive_uploader/St
 * jarの第一引数にアップロードするファイルを、第2引数にアップロード先ディレクトリを、第3引数にアップロード先ファイル名を指定する。  
 cronで定期的に実行する例(毎日0時5分に動かし、アップロード時にファイル名末尾に日付を付与する場合)  
     5 0 * * * cd /home/hogehoge/bat/;java -jar GoogleDriveUploader.jar hoge.zip /backup/piyo hoge\`date +\%y\%m\%d\`.zip
+
+## License
+[MIT](https://github.com/tsyki/backup-to-google-drive/blob/master/LICENSE)
